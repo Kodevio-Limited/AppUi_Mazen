@@ -1,0 +1,43 @@
+services:
+  app-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+    container_name: app_ui
+    restart: unless-stopped
+    expose:
+      - "3004"
+    ports:
+      - "3004:3004"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3004/').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.appui.rule=Host(`app.codevio.com`) || Host(`order.codevio.com`) || Host(`dine.codevio.com`)
+      - traefik.http.routers.appui.entrypoints=websecure
+      - traefik.http.routers.appui.tls.certResolver=letsencrypt
+      - traefik.http.routers.appui-http.rule=Host(`app.codevio.com`) || Host(`order.codevio.com`) || Host(`dine.codevio.com`)
+      - traefik.http.routers.appui-http.entrypoints=web
+      - traefik.http.routers.appui-http.middlewares=redirect-to-https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.services.appui.loadbalancer.server.port=3004
+
+networks:
+  dokploy-network:
+    external: true
