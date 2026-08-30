@@ -27,10 +27,10 @@ services:
       - dokploy-network
     labels:
       - traefik.enable=true
-      - traefik.http.routers.appui.rule=Host(`app.codevio.com`) || Host(`order.codevio.com`) || Host(`dine.codevio.com`)
+      - traefik.http.routers.appui.rule=Host(`app.kodevio.com`) || Host(`order.kodevio.com`) || Host(`dine.codevio.com`)
       - traefik.http.routers.appui.entrypoints=websecure
       - traefik.http.routers.appui.tls.certResolver=letsencrypt
-      - traefik.http.routers.appui-http.rule=Host(`app.codevio.com`) || Host(`order.codevio.com`) || Host(`dine.codevio.com`)
+      - traefik.http.routers.appui-http.rule=Host(`app.kodevio.com`) || Host(`order.kodevio.com`) || Host(`dine.codevio.com`)
       - traefik.http.routers.appui-http.entrypoints=web
       - traefik.http.routers.appui-http.middlewares=redirect-to-https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
