@@ -16,6 +16,8 @@ COPY . .
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
+# Produces .next/standalone (see next.config.mjs)
+ENV STANDALONE_BUILD=true
 
 RUN npm run build
 

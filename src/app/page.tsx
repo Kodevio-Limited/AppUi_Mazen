@@ -45,6 +45,7 @@ export default function AppPage() {
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   const [pastOrders, setPastOrders] = useState<Order[]>([]);
   const [receiptOrder, setReceiptOrder] = useState<Order | null>(null);
+  const [receiptFrom, setReceiptFrom] = useState<'orders' | 'history'>('orders');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [waiterState, setWaiterState] = useState<WaiterState>('closed');
 
@@ -129,10 +130,15 @@ export default function AppPage() {
     setScreen('confirmed');
   };
 
+  const handleAddManyToCart = (items: CartItem[]) => {
+    items.forEach(handleAddToCart);
+  };
+
   const handleViewStatus = () => setScreen('orders');
 
-  const handleViewReceipt = (order?: Order) => {
+  const handleViewReceipt = (order?: Order, from: 'orders' | 'history' = 'orders') => {
     setReceiptOrder(order ?? activeOrder);
+    setReceiptFrom(from);
     setScreen('receipt');
   };
 
@@ -183,6 +189,7 @@ export default function AppPage() {
               onViewItem={handleViewItem}
               onViewCart={() => setScreen('cart')}
               onCallWaiter={handleWaiterCall}
+              onAddManyToCart={handleAddManyToCart}
             />
             {waiterState !== 'closed' && (
               <CallWaiterModal
@@ -283,15 +290,16 @@ export default function AppPage() {
               setActiveOrder(o);
               setScreen('orders');
             }}
+            onViewOngoing={() => setScreen('orders')}
             onViewCart={() => setScreen('cart')}
-            onViewReceipt={(o) => handleViewReceipt(o)}
+            onViewReceipt={(o) => handleViewReceipt(o, 'history')}
           />
         )}
 
         {screen === 'receipt' && (receiptOrder ?? activeOrder) && (
           <ReceiptScreen
             order={(receiptOrder ?? activeOrder)!}
-            onBack={() => setScreen(screen === 'receipt' ? 'orders' : 'history')}
+            onBack={() => setScreen(receiptFrom)}
             onDone={() => setScreen('menu')}
           />
         )}
@@ -299,6 +307,7 @@ export default function AppPage() {
 
       {/* Navigation breadcrumb below phone (dev helper) */}
       <div
+        className="dev-breadcrumb"
         style={{
           position: 'fixed',
           bottom: 16,

@@ -8,11 +8,12 @@ interface HistoryScreenProps {
   orders: Order[];
   onBack: () => void;
   onViewOrder: (order: Order) => void;
+  onViewOngoing: () => void;
   onViewCart: () => void;
   onViewReceipt: (order: Order) => void;
 }
 
-export default function HistoryScreen({ orders, onBack, onViewOrder, onViewCart, onViewReceipt }: HistoryScreenProps) {
+export default function HistoryScreen({ orders, onBack, onViewOrder, onViewOngoing, onViewCart, onViewReceipt }: HistoryScreenProps) {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', background: '#F2F2F2', borderRadius: 19, overflow: 'hidden' }}>
       <StatusBar dark />
@@ -43,7 +44,7 @@ export default function HistoryScreen({ orders, onBack, onViewOrder, onViewCart,
             <button
               key={tab}
               onClick={() => {
-                if (tab === 'Ongoing') onViewOrder(orders[0]);
+                if (tab === 'Ongoing') onViewOngoing();
                 if (tab === 'Cart') onViewCart();
               }}
               style={{
